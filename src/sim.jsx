@@ -31,7 +31,8 @@ export const etaTo = (s, id) => {
 }
 export const nextJ = (s) => ROUTES[s.route].js.find((x) => !s.passed.includes(x.id) && x.idx >= s.p)?.id
 export function position(route, p) {
-  const pts = ROUTES[route].pts, i = Math.min(Math.floor(p), LAST - 1), f = p - i
+  const pts = ROUTES[route].pts, x = Math.min(1, Math.max(0, p / LAST)) * (pts.length - 1) // works for demo and live routes
+  const i = Math.min(Math.floor(x), pts.length - 2), f = x - i
   return [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f]
 }
 export function driverMessage(s) {
@@ -114,7 +115,7 @@ function reducer(s, a) {
   }
 }
 
-const Ctx = createContext(null)
+export const Ctx = createContext(null)
 export function SimProvider({ children }) {
   const [s, d] = useReducer(reducer, undefined, () => fresh(3))
   useEffect(() => {

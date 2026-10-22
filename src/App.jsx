@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Ambulance, Flame, Siren, TrafficCone, Car, ArrowRight } from 'lucide-react'
+import { useSim } from './sim.jsx'
 import { AmbulanceView, FireView, PoliceView, SignalView, DriverView, Controls } from './roles.jsx'
 
 const ROLES = [
@@ -22,6 +23,7 @@ const Logo = ({ size = 30 }) => (
 
 export default function App() {
   const [role, setRole] = useState(null)
+  const { s } = useSim()
   const [hov, setHov] = useState(ROLES[0])
   const r = ROLES.find((x) => x.id === role)
   return (
@@ -29,6 +31,7 @@ export default function App() {
       <header className="top">
         <button className="brand" onClick={() => setRole(null)} aria-label="Health-Wave home"><Logo /><b>Health-Wave</b></button>
         <span className="sim">SIMULATION - NOT CONNECTED TO REAL EMERGENCY SERVICES</span>
+        <span className={'conn ' + (s.conn || 'local')}>{s.mode === 'live' ? `Backend: ${s.conn}` : 'Local simulation'}</span>
       </header>
       {r && <nav className="rolenav">
         {ROLES.map((x) => <button key={x.id} className={x.id === role ? 'on' : ''} onClick={() => setRole(x.id)}><x.icon size={16} />{x.nav}</button>)}
@@ -59,6 +62,7 @@ export default function App() {
       ) : (
         <main className="content">
           <div className="pagehead"><div className="phi"><r.icon size={26} /></div><div><h1>{r.title}</h1><p>{r.desc}</p></div></div>
+          {s.error && <p className="note">{s.error}</p>}
           {r.id !== 'driver' && <Controls role={r.id} />}
           <r.view />
         </main>

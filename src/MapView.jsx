@@ -34,7 +34,8 @@ export default function MapView({ tall }) {
     else L.marker(ROUTES.A.pts[0], { icon: icon('veh') }).bindTooltip('Demo start point').addTo(g)
   }, [s])
 
-  useEffect(() => { if (s.focus) map.current.flyTo(J[s.focus.id].pos, 16) }, [s.focus])
+  useEffect(() => { if (s.focus && J[s.focus.id]) map.current.flyTo(J[s.focus.id].pos, 16) }, [s.focus])
+  useEffect(() => { if (s.tripId && ROUTES.A.pts.length > 1) map.current.fitBounds(L.latLngBounds(ROUTES.A.pts), { padding: [30, 30] }) }, [s.tripId])
 
   // Fallback drawing if map tiles cannot load (offline demo)
   const all = [...ROUTES.A.pts, ...ROUTES.B.pts]
